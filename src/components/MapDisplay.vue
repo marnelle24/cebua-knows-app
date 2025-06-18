@@ -226,7 +226,7 @@ function regionClicked(name: string) {
 svg {
     /* width: 100%; */
     /* max-width: 60vw; */
-    padding-top: 100px;
+    /* padding-top: 100px; */
     height: auto;
     transform: scale(2);
     transform-origin: center;

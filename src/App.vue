@@ -7,7 +7,7 @@ import MapDisplay from './components/MapDisplay.vue'
 
 <template>
   <!-- <div class="headerContainer"> -->
-  <main class="mainWrapper">
+  <main>
     <HeaderDisplay msg="Everything you need to know about Cebu" />
     <div class="contentWrapper">
       <RouterView />
@@ -25,12 +25,5 @@ import MapDisplay from './components/MapDisplay.vue'
   flex-direction: column;
   align-items: center;
   max-width: 100%;
-  margin: 50px auto;
-}
-
-.contentWrapper {
-  max-width: 100%;
-  background-color: #f8f9fa;
-  opacity: 0.5;
 }
 </style>
