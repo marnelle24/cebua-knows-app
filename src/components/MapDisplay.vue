@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
+import { useRouter } from 'vue-router';
 
 const tooltip = ref<HTMLElement | null>(null);
 
@@ -8,8 +9,8 @@ onMounted(() => {
 
     regions.forEach(region => {
         region.addEventListener('click', () => {
-            const name = region.id.includes('-city') ? region.id.replace(/-/g, ' ').replace('city', 'City') : region.id;
-            regionClicked(name);
+            // const name = region.id.includes('-city') ? region.id.replace(/-/g, ' ').replace('city', 'City') : region.id;
+            regionClicked(region.id);
         });
     });
 
@@ -42,10 +43,25 @@ onMounted(() => {
     }
 });
 
+const router = useRouter();
+const regionClicked = (id) => {
+    console.log(`Region clicked: ${id}`);
+    router.push({ name: 'location', params: { location: id } });
+    // create a smooth scroll to the #mainContainer 
+    const mainContainer = document.getElementById('mainContainer'); // get the mainContainer element
+    if (mainContainer) {
+        mainContainer.scrollIntoView({ behavior: 'smooth' });
+    }
+};
+
 // Function to handle region click
-function regionClicked(name: string) {
-    alert("You clicked on: " + name);
-}
+// function regionClicked(name: string, id = NULL) {
+//     console.log(`Region clicked: ${name}`);
+//     console.log(`Region ID: ${id}`);
+//     // redirect to the location view with the region name
+//     const url = `/${id}`;
+//     window.location.href = url;
+// }
 </script>
 
 <template>
@@ -224,9 +240,6 @@ function regionClicked(name: string) {
 }
 
 svg {
-    /* width: 100%; */
-    /* max-width: 60vw; */
-    /* padding-top: 100px; */
     height: auto;
     transform: scale(2);
     transform-origin: center;
@@ -237,7 +250,6 @@ svg {
     svg {
         width: 90vw;
         max-width: 80vw;
-        /* add zoome in or scale to 150%  in mobile view */
         transform: scale(1);
         padding-top: 20px;
         transform-origin: center;

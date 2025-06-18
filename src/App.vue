@@ -1,5 +1,5 @@
 <script setup lang="ts">
-// import { RouterLink, RouterView } from 'vue-router'
+import { RouterView } from 'vue-router'
 // import { RouterLink } from 'vue-router'
 import HeaderDisplay from './components/HeaderDisplay.vue'
 import MapDisplay from './components/MapDisplay.vue'
@@ -9,7 +9,7 @@ import MapDisplay from './components/MapDisplay.vue'
   <!-- <div class="headerContainer"> -->
   <main>
     <HeaderDisplay msg="Everything you need to know about Cebu" />
-    <div class="contentWrapper">
+    <div id="mainContainer" class="contentWrapper">
       <RouterView />
     </div>
   </main>
@@ -19,11 +19,12 @@ import MapDisplay from './components/MapDisplay.vue'
 </template>
 
 <style scoped>
-.mainWrapper {
+.contentWrapper {
   display: flex;
-  row-gap: 25px;
+  margin-top: 20px;
+  gap: 25px;
   flex-direction: column;
-  align-items: center;
-  max-width: 100%;
+  width: 100%;
+  min-height: 200px;
 }
 </style>

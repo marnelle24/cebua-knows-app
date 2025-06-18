@@ -5,12 +5,14 @@ defineProps<{
 </script>
 
 <template>
-  <header class="headerContainer">
-    <img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="125" height="125" />
-    <div>
-      <h1>Cebua<strong>Knows</strong></h1>
-      <h3>{{ msg }}</h3>
-    </div>
+  <header>
+    <router-link to="/" class="headerContainer">
+      <img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="125" height="125" />
+      <div>
+        <h1>Cebua<strong>Knows</strong></h1>
+        <h3>{{ msg }}</h3>
+      </div>
+    </router-link>
   </header>
 </template>
 
