@@ -27,4 +27,15 @@ import MapDisplay from './components/MapDisplay.vue'
   width: 100%;
   min-height: 200px;
 }
+
+/* hide the contentWrapper element if the viewport is mobille device  */
+@media screen and (max-width: 600px) {
+  .contentWrapper {
+    flex-direction: row;
+    gap: 50px;
+  }
+
+}
+
+/* Foursquare API = fsq3BNY+jld0H+BnSFdbwlYh8Lbzb3VOtZv+Jz+5JuKSTvU= */
 </style>

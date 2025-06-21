@@ -6,13 +6,13 @@ defineProps<{
 
 <template>
   <header>
-    <router-link to="/" class="headerContainer">
-      <img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="125" height="125" />
-      <div>
+    <a href="/" class="headerContainer">
+      <img alt="Vue logo" class="logo" src="@/assets/logo.png" />
+      <!-- <div>
         <h1>Cebua<strong>Knows</strong></h1>
         <h3>{{ msg }}</h3>
-      </div>
-    </router-link>
+      </div> -->
+    </a>
   </header>
 </template>
 
@@ -42,7 +42,7 @@ h3 {
 .logo {
   display: block;
   /* margin: 0 auto; */
-  width: 4rem;
+  /* width: 4rem; */
 }
 
 /* .greetings h1,
