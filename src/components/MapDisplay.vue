@@ -12,8 +12,12 @@ onMounted(() => {
 });
 
 watchEffect(() => {
-    if (route.params.location)
-        selectedRegion(route.params.location);
+    if (route.params.location) {
+        const location = route.params.location;
+        if (typeof location === 'string') {
+            selectedRegion(location);
+        }
+    }
 });
 
 // Function to set tooltip element
@@ -35,7 +39,7 @@ const setTooltipElement = () => {
                 const mouseEvent = event as MouseEvent;
                 if (tooltip.value) {
                     tooltip.value.style.left = (mouseEvent.pageX + 10) + 'px';
-                    tooltip.value.style.top = (mouseEvent.pageY - 20) + 'px';
+                    tooltip.value.style.top = (mouseEvent.pageY - 5) + 'px';
                 }
             });
 
@@ -75,17 +79,20 @@ const selectedRegion = (regionId: string) => {
     resetMap('#F7AE1D'); // Reset all regions to default color
     changeFillColor(regionId, '#7BEA05'); // Highlight selected region
 
-    const selectedRegion = document.getElementById('cebuProvinceMap').querySelector(`#${regionId}`);
-    if (selectedRegion)
-        regionClicked(selectedRegion);
-
+    const svgMap = document.getElementById('cebuProvinceMap');
+    if (svgMap) {
+        const selectedReg = svgMap.querySelector(`#${regionId}`);
+        if (selectedReg)
+            regionClicked(selectedReg);
+    }
 }
 
 // Function to handle click
-const regionClicked = (region: string) => {
-    const svgMap = document.getElementById('cebuProvinceMap');
+const regionClicked = (region: Element) => {
+    const svgMap = document.getElementById('cebuProvinceMap') as SVGSVGElement | null;
+    if (!svgMap) return;
 
-    const bbox = region.getBBox(); // Get bounding box of clicked region
+    const bbox = (region as SVGGraphicsElement).getBBox(); // Get bounding box of clicked region
 
     const svgWidth = svgMap.viewBox.baseVal.width;
     const svgHeight = svgMap.viewBox.baseVal.height;
@@ -95,6 +102,7 @@ const regionClicked = (region: string) => {
     const centerY = bbox.y + bbox.height / 2;
 
     // Desired zoom scale
+    // const scale = window.innerWidth <= 400 ? 2 : 5;
     const scale = 4;
 
     // Calculate translation to center the clicked region
@@ -106,15 +114,15 @@ const regionClicked = (region: string) => {
     // svgMap.style.transformOrigin = 'center center';
     svgMap.style.transform = `scale(${scale}) translate(${translateX / scale}px, ${translateY / scale}px)`;
 
-    router.push({ name: 'location', params: { location: region.id } });
+    router.push({ name: 'location', params: { location: (region as HTMLElement).id } });
 };
 
 </script>
 
 <template>
-    <div class="mapWrapper">
-        <svg id="cebuProvinceMap" width="213" height="466" viewBox="0 0 213 466" fill="none"
-            preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
+    <div class="flex items-center justify-center">
+        <svg class="scale-[200%] duration-400 transition" id="cebuProvinceMap" width="213" height="466"
+            viewBox="0 0 213 466" fill="none" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
             <path id="alcantara" @click="selectedRegion('alcantara')" class="region"
                 d="M45.8608 329.765L43.7531 330.138L39.2136 330.924L37.8135 330.786L33.2445 330.099L30.7978 328.821L30.3852 329.49L30.5031 330.393L30.2672 330.57L30.3557 330.904H30.8715L30.7389 331.455L29.7072 331.356L29.1766 331.848L28.926 332.614L29.4271 332.457L29.5303 333.597L30.9894 334.343L36.5459 334.776L44.1806 336.662L45.8608 329.765ZM29.5745 330.551L29.5598 330.983L29.9725 330.708L29.7956 330.433L29.5745 330.551Z"
                 fill="#F7AE1D" stroke="black" stroke-width="0.4" stroke-miterlimit="10" />
@@ -238,7 +246,7 @@ const regionClicked = (region: string) => {
             <path id="san-fernando" @click="selectedRegion('san-fernando')" class="region"
                 d="M72.8768 301.309L72.5525 301.23L73.2895 300.287L74.3064 297.615L75.6034 295.708L75.9572 296.16L75.9719 295.453L76.3993 294.765L76.4288 294.018L77.6374 293.114L78.6396 291.483L79.2734 291.169L75.6624 286.158L69.31 279.476L68.352 280.498L66.5097 283.466L64.52 287.258L62.6039 291.68L65.9791 294.333L69.9143 297.968L70.7544 299.501L70.7839 300.051L71.9335 300.543L72.1693 301.348L72.8768 301.309Z"
                 fill="#F7AE1D" stroke="black" stroke-width="0.4" stroke-miterlimit="10" />
-            <path id="san-francisco" @click="selectedRegion('san')" class="region"
+            <path id="san-francisco" @click="selectedRegion('san-francisco')" class="region"
                 d="M166.084 208.966L166.777 208.062L167.927 207.473L168.487 206.628L169.666 206.706L171.199 204.879H171.891L172.584 205.567L173.955 204.093L175.06 203.641L175.252 202.914L175.119 201.931L175.532 200.811L175.37 199.848L175.547 199.592L176.269 199.985L175.266 199.003L174.972 198.02L174.927 196.35L174.5 194.797L174.574 192.4L174.176 190.651L172.835 190.002L169.636 186.917L168.384 187.192L165.716 186.701L165.333 186.976L165.509 187.802L164.61 190.199L164.596 194.188L164.419 194.68L164.714 195.407L163.8 197.824L163.726 199.514H163.49L162.871 200.673L162.783 201.734L162.149 202.304L162.002 202.953L161.471 203.346L161.191 204.171L159.923 205.763L159.614 206.549L159.246 209.399L159.526 210.204L160.439 210.794L162.576 211.089L164.065 210.362L164.758 211.01L166.084 208.966ZM171.552 193.893L171.567 194.463L171.803 194.503L172.009 195.112L171.921 195.426L171.405 195.662L169.798 195.23L168.929 194.483L169.017 194.188L168 193.54L166.63 194.031L166.187 193.245L166.32 192.675L165.966 191.712L166.6 191.044L167.676 191.299L168.664 192.557L168.752 193.284L169.341 192.262L170.417 192.145L171.552 193.893ZM165.952 183.616L165.259 183.734L165.288 184.5L166.32 185.05L166.969 185.915L167.086 185.758L165.952 183.616Z"
                 fill="#F7AE1D" stroke="black" stroke-width="0.4" stroke-miterlimit="10" />
             <path id="san-remigio" @click="selectedRegion('san')" class="region"
@@ -275,35 +283,13 @@ const regionClicked = (region: string) => {
                 d="M184.36 202.815L185.937 202.697L187.971 201.282L188.782 201.558L190.609 200.948L192.776 199.592L194.368 197.863L195.09 196.468L195.016 195.191L194.309 193.029L193.852 192.479L192.083 191.614L190.668 189.059L189.917 188.529L187.544 192.164L185.849 195.584L184.611 199.573L184.257 202.403L184.36 202.815Z"
                 fill="#F7AE1D" stroke="black" stroke-width="0.4" stroke-miterlimit="10" />
         </svg>
-        <div id="tooltip" class="map-tooltip" ref="tooltip"></div>
+        <div id="tooltip"
+            class="map-tooltip absolute text-white capitalize bg-gray-500/80 border border-gray-500 p-2 font-bold rounded-md text-xs"
+            ref="tooltip"></div>
     </div>
 </template>
 
 <style scoped>
-.mapWrapper {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-svg {
-    height: auto;
-    transform: scale(2);
-    transform-origin: center;
-    transition: transform 0.4s ease-in-out;
-}
-
-@media (max-width: 600px) {
-    svg {
-        width: 90vw;
-        max-width: 80vw;
-        transform: scale(1);
-        padding-top: 20px;
-        transform-origin: center;
-        transition: transform 0.4s ease-in-out;
-    }
-}
-
 .region {
     stroke: black;
     stroke-width: 0.40;
@@ -313,17 +299,7 @@ svg {
 
 .region:hover {
     fill: #7BEA05 !important;
-}
-
-.map-tooltip {
-    position: absolute;
-    color: #fff;
-    text-transform: capitalize;
-    background-color: rgba(100, 100, 100, 0.8);
-    border: 1px solid #373737;
-    padding: 5px;
-    border-radius: 4px;
-    pointer-events: none;
-    font-size: 14px;
+    transform: translateY(-0.5px);
+    transition: transform 0.2s ease;
 }
 </style>

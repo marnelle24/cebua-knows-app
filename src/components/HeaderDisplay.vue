@@ -6,55 +6,11 @@ defineProps<{
 
 <template>
   <header>
-    <a href="/" class="headerContainer">
-      <img alt="Vue logo" class="logo" src="@/assets/logo.png" />
-      <!-- <div>
-        <h1>Cebua<strong>Knows</strong></h1>
-        <h3>{{ msg }}</h3>
-      </div> -->
+    <!-- <router-link to="/"> -->
+    <a href="/">
+      <img alt="CebuaKnows" src="@/assets/logo.png"
+        class="xl:w-full w-4/5 xl:mt-0 mt-4 flex justify-center mx-auto hover:scale-105 duration-500 transition" />
     </a>
+    <!-- </router-link> -->
   </header>
 </template>
-
-<style scoped>
-.headerContainer {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  width: 100%;
-}
-
-h1 {
-  font-weight: 500;
-  font-size: 2.6rem;
-  line-height: 2.5rem;
-}
-
-strong {
-  font-weight: 600;
-  color: #FFF;
-}
-
-h3 {
-  font-size: 1rem;
-}
-
-.logo {
-  display: block;
-  /* margin: 0 auto; */
-  /* width: 4rem; */
-}
-
-/* .greetings h1,
-.greetings h3 {
-  text-align: center;
-} */
-
-/* @media (min-width: 1024px) {
-
-  .greetings h1,
-  .greetings h3 {
-    text-align: left;
-  }
-} */
-</style>
