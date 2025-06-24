@@ -18,17 +18,18 @@ watchEffect(() => {
     .replace(/-/g, ' ')
     .replace(/\b\w/g, l => l.toUpperCase());
 
-  loading.value = true;
+  // loading.value = true;
   spots.value = []; // Reset spots before fetching new data
 
   // Optionally call OpenAI API here
-  if (location.value)
-    executeChartGPTPrompt(location.value);
+  // if (location.value)
+  // executeChartGPTPrompt(location.value);
 
-  loading.value = false;
+  // loading.value = false;
 });
 
 async function executeChartGPTPrompt(selectedLocation) {
+
   const apiKey = import.meta.env.VITE_OPENAI_API_KEY;
   const prompt = `
   List the top 10 tourist destinations in ${selectedLocation} in the province of Cebu, Philippines, and include:
@@ -85,8 +86,11 @@ async function executeChartGPTPrompt(selectedLocation) {
           <p class="numbering">{{ index + 1 + '.' }}</p>
           <div>
             <h3 class="text-xl font-bold">
-              {{ spot.name }}
-              <span class="category">{{ spot.category }}</span>
+              <div>
+                {{ spot.name }}
+                <span class="category">{{ spot.category }}</span>
+              </div>
+              <p class="address">Location: {{ spot.address }}</p>
             </h3>
             <p class="description">{{ spot.description }}</p>
           </div>
@@ -112,6 +116,18 @@ async function executeChartGPTPrompt(selectedLocation) {
 
 
 <style scoped>
+.address {
+  font-size: 14px !important;
+  margin: 0px;
+  font-style: italic;
+}
+
+.description {
+  font-size: 14px !important;
+  margin: 0px;
+  color: #fff;
+}
+
 .spinner {
   display: flex;
   justify-content: center;
