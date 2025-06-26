@@ -175,15 +175,4 @@ async function executeChartGPTPrompt() {
     color: #fff;
     margin-bottom: 1rem;
 }
-
-.location {
-    font-size: 2rem;
-    font-weight: 600;
-    color: #fff;
-    text-transform: capitalize;
-}
-
-.location span {
-    font-style: italic;
-}
 </style>

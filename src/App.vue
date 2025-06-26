@@ -11,7 +11,7 @@ import MapDisplay from './components/MapDisplay.vue'
     <div class="sticky top-0 z-[99999]">
       <HeaderDisplay msg="Everything you need to know about Cebu" />
       <div id="mainContainer">
-        <RouterView />
+        <RouterView :key="$route.fullPath" />
       </div>
     </div>
   </main>
