@@ -6,22 +6,9 @@ import type { Ref } from 'vue';
 import { RouterLink } from 'vue-router'
 
 const route = useRoute();
-// const router = useRouter();
 const prettyLocation: Ref<string | null> = ref(null);
-const openIndex = ref<number | null>(null)
 
-// on load the route, reset all the data again
-function resetAllData() {
-  prettyLocation.value = null;
-  openIndex.value = null;
-}
-
-// function toggle(index: number) {
-//   if (openIndex.value !== index)
-//     openIndex.value = index;
-//   else
-//     openIndex.value = null;
-// }
+const location = route.params.location;
 
 const services = ref([
   {
@@ -57,7 +44,7 @@ watchEffect(() => {
 
   // console.log(location, query, phrase);
 
-  resetAllData();
+  prettyLocation.value = null;
 
   if (typeof location === 'string') {
     prettyLocation.value = location.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
@@ -76,7 +63,7 @@ watchEffect(() => {
       <div class="p-4 flex gap-4 flex-wrap">
         <router-link v-for="(item, index) in services" :key="index"
           class="text-[#f7ae1d] hover:bg-[#f7ae1d]/70 hover:text-white hover:scale-105 hover:shadow hover:shadow-[#f7ae1d]/60 duration-300 cursor-pointer border border-[#f7ae1d] py-2 px-4 rounded-full flex items-center justify-center text-lg"
-          :to="{ name: 'inquiry', params: { place: 'cebu-city', inquiry: item.query } }">
+          :to="{ name: 'inquiry', params: { place: location, inquiry: item.query } }">
           {{ item.label }}
         </router-link>
       </div>

@@ -1,20 +1,18 @@
 <script setup lang="ts">
+defineOptions({
+    name: 'InquiryView'
+})
 import { useRoute } from 'vue-router'
 const route = useRoute()
 
-console.log('CURRENT ROUTE:', route.fullPath)
-console.log('ROUTE NAME:', route.name)
 console.log('ROUTE PARAMS:', route.params)
 
-// defineOptions({
-//     name: 'InquiryView'
-// })
 
 // console.log(location)
 
 </script>
 <template>
-    <div>
+    <div class="mt-10 px-5 border py-8">
         <p>fdsfsfsfssd dfsafsd fsd</p>
         <p>fdsfsfsfssd dfsafsd fsd</p>
         <p>fdsfsfsfssd dfsafsd fsd</p>

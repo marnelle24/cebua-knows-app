@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted, watchEffect } from 'vue';
+import { ref, onMounted, watch } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 
 const tooltip = ref<HTMLElement | null>(null);
@@ -11,14 +11,16 @@ onMounted(() => {
     setTooltipElement(); // Set up tooltip event listeners
 });
 
-watchEffect(() => {
-    if (route.params.location) {
-        const location = route.params.location;
-        if (typeof location === 'string') {
-            selectedRegion(location);
+
+watch(
+    () => route.params.location || route.params.place,
+    (val) => {
+        if (typeof val === 'string' && val.trim() !== '') {
+            selectedRegion(val.trim())
         }
-    }
-});
+    },
+    { immediate: true }
+)
 
 // Function to set tooltip element
 const setTooltipElement = () => {
