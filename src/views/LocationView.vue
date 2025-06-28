@@ -12,30 +12,66 @@ const location = route.params.location;
 
 const services = ref([
   {
-    label: 'Top 3 Five Stars Hotels',
+    label: 'Hotels',
     query: 'hotels',
     keyphrase: 'top-2-hotels'
   },
   {
-    label: 'Top 5 Coffee Shops',
+    label: 'Coffee Shops',
     query: 'coffee-shops',
     keyphrase: 'top-5-coffee-shops'
   },
   {
-    label: 'Top 5 Tourist Destinations',
+    label: 'Tourist Spots',
     query: 'tourist-spots',
     keyphrase: 'top-5-tourist-destinations'
   },
+  {
+    label: 'Milk Tea Shops',
+    query: 'mil-tea-shops',
+    keyphrase: 'top-milk-tea-shops'
+  },
+  {
+    label: 'Coffee Shops',
+    query: 'coffee-shops',
+    keyphrase: 'top-5-coffee-shops'
+  },
+  {
+    label: 'Diving Spots',
+    query: 'diving-spots',
+    keyphrase: 'top-diving-spots'
+  },
+  {
+    label: 'Tourist Inn',
+    query: 'tourist-inn',
+    keyphrase: 'top-tourist-inn'
+  },
+  {
+    label: 'Cebu Delicacies',
+    query: 'cebu-delicacies',
+    keyphrase: 'top-cebu-delicacies'
+  },
+  {
+    label: 'Churches',
+    query: 'churches',
+    keyphrase: 'churches'
+  },
+  {
+    label: 'Police Station',
+    query: 'police-stations',
+    keyphrase: 'police-stations'
+  },
+  {
+    label: 'Car Rentals',
+    query: 'car-rentals',
+    keyphrase: 'car-rentals'
+  },
+  {
+    label: 'Golf Courses',
+    query: 'golf-courses',
+    keyphrase: 'golf-courses'
+  },
 ]);
-
-
-// const features = ref([
-//   { key: 'spots', heading: 'Top Famous Tourist Spots', subheading: 'Lorem Ipsum Dolor. Lorem Ipsum Dolor.Lorem Ipsum Dolor.Lorem Ipsum Dolor.' },
-//   { key: 'underrated', heading: 'Under-rated Tourist Spots', subheading: 'Lorem Ipsum Dolor. Lorem Ipsum Dolor.Lorem Ipsum Dolor.Lorem Ipsum Dolor.' },
-//   { key: 'local-foods', heading: 'Local Foods', subheading: 'Lorem Ipsum Dolor. Lorem Ipsum Dolor.Lorem Ipsum Dolor.Lorem Ipsum Dolor.' },
-//   { key: 'delicacy', heading: 'Delicacies', subheading: 'Lorem Ipsum Dolor. Lorem Ipsum Dolor.Lorem Ipsum Dolor.Lorem Ipsum Dolor.' },
-// ]);
-// reactive variables to hold location and pretty location
 
 watchEffect(() => {
   const location = route.params.location;
@@ -59,10 +95,11 @@ watchEffect(() => {
 <template>
   <div class="locationWrapper">
     <div class="mt-10">
-      <p class="px-4 text-[#f7ae1d] italic text-lg">What are you looking for in {{ prettyLocation }}?</p>
+      <p class="px-4 text-[#f7ae1d] italic text-xl font-semibold">What are you looking for in {{ prettyLocation }}?</p>
+      <br />
       <div class="p-4 flex gap-4 flex-wrap">
         <router-link v-for="(item, index) in services" :key="index"
-          class="text-[#f7ae1d] hover:bg-[#f7ae1d]/70 hover:text-white hover:scale-105 hover:shadow hover:shadow-[#f7ae1d]/60 duration-300 cursor-pointer border border-[#f7ae1d] py-2 px-4 rounded-full flex items-center justify-center text-lg"
+          class="text-[#f7ae1d] font-thin hover:bg-[#f7ae1d]/70 hover:text-white hover:scale-105 hover:shadow hover:shadow-[#f7ae1d]/60 duration-300 cursor-pointer border border-[#f7ae1d] py-2 px-4 rounded-full flex items-center justify-center text-lg"
           :to="{ name: 'inquiry', params: { place: location, inquiry: item.query } }">
           {{ item.label }}
         </router-link>

@@ -5,7 +5,7 @@ import MapDisplay from './components/MapDisplay.vue'
 </script>
 
 <template>
-  <main class="flex items-center justify-center sticky">
+  <main class="flex items-center justify-center sticky z-50">
     <div class="sticky top-0 z-[99999]">
       <HeaderDisplay msg="Everything you need to know about Cebu" />
       <div id="mainContainer">
