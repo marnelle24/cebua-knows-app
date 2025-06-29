@@ -12,74 +12,74 @@ const location = route.params.location;
 
 const services = ref([
   {
-    label: 'Hotels',
     query: 'hotels',
+    label: 'Hotels',
     keyphrase: 'top-2-hotels'
   },
   {
-    label: 'Coffee Shops',
     query: 'coffee-shops',
+    label: 'Coffee Shops',
     keyphrase: 'top-5-coffee-shops'
   },
   {
-    label: 'Tourist Spots',
     query: 'tourist-spots',
+    label: 'Tourist Spots',
     keyphrase: 'top-5-tourist-destinations'
   },
   {
+    query: 'milk-tea-shops',
     label: 'Milk Tea Shops',
-    query: 'mil-tea-shops',
     keyphrase: 'top-milk-tea-shops'
   },
   {
-    label: 'Coffee Shops',
     query: 'coffee-shops',
+    label: 'Coffee Shops',
     keyphrase: 'top-5-coffee-shops'
   },
   {
-    label: 'Diving Spots',
     query: 'diving-spots',
+    label: 'Diving Spots',
     keyphrase: 'top-diving-spots'
   },
   {
-    label: 'Tourist Inn',
     query: 'tourist-inn',
+    label: 'Tourist Inn',
     keyphrase: 'top-tourist-inn'
   },
   {
-    label: 'Cebu Delicacies',
-    query: 'cebu-delicacies',
-    keyphrase: 'top-cebu-delicacies'
+    query: 'delicacies',
+    label: 'Delicacies',
+    keyphrase: 'top-delicacies'
   },
   {
-    label: 'Churches',
     query: 'churches',
+    label: 'Churches',
     keyphrase: 'churches'
   },
   {
-    label: 'Police Station',
     query: 'police-stations',
+    label: 'Police Station',
     keyphrase: 'police-stations'
   },
   {
-    label: 'Car Rentals',
     query: 'car-rentals',
+    label: 'Car Rentals',
     keyphrase: 'car-rentals'
   },
   {
-    label: 'Golf Courses',
     query: 'golf-courses',
+    label: 'Golf Courses',
     keyphrase: 'golf-courses'
+  },
+  {
+    query: 'politician',
+    label: 'Politicians',
+    keyphrase: 'current politicians'
   },
 ]);
 
 watchEffect(() => {
   const location = route.params.location;
-  // const query = route.params.route;
-  // const phrase = route.params.keyphrase;
-
-  // console.log(location, query, phrase);
-
   prettyLocation.value = null;
 
   if (typeof location === 'string') {

@@ -2,6 +2,10 @@
 import { RouterView } from 'vue-router'
 import HeaderDisplay from './components/HeaderDisplay.vue'
 import MapDisplay from './components/MapDisplay.vue'
+
+// const route = useRoute();
+// console.log(route.params);
+
 </script>
 
 <template>
@@ -13,7 +17,7 @@ import MapDisplay from './components/MapDisplay.vue'
       </div>
     </div>
   </main>
-  <MapDisplay />
+  <MapDisplay :map-scale="4" />
 </template>
 
 <style scoped></style>

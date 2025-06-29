@@ -1,0 +1,62 @@
+[
+    {
+      "query": "hotels",
+      "label": "Hotels",
+      "keyphrase": "top hotels"
+    },
+    {
+      "query": "coffee-shops",
+      "label": "Coffee Shops",
+      "keyphrase": "top 5 coffee shops"
+    },
+    {
+      "query": "tourist-spots",
+      "label": "Tourist Spots",
+      "keyphrase": "top 5 tourist destinations"
+    },
+    {
+      "query": "milk-tea-shops",
+      "label": "Milk Tea Shops",
+      "keyphrase": "top milk tea shops"
+    },
+    {
+      "query": "diving-spots",
+      "label": "Diving Spots",
+      "keyphrase": "top diving spots"
+    },
+    {
+      "query": "tourist-inn",
+      "label": "Tourist Inn",
+      "keyphrase": "top tourist inn"
+    },
+    {
+      "query": "delicacies",
+      "label": "Delicacies",
+      "keyphrase": "top delicacies"
+    },
+    {
+      "query": "churches",
+      "label": "Churches",
+      "keyphrase": "churches"
+    },
+    {
+      "query": "police-stations",
+      "label": "Police Station",
+      "keyphrase": "police stations"
+    },
+    {
+      "query": "car-rentals",
+      "label": "Car Rentals",
+      "keyphrase": "car rentals"
+    },
+    {
+      "query": "golf-courses",
+      "label": "Golf Courses",
+      "keyphrase": "golf courses"
+    },
+    {
+      "query": "politician",
+      "label": "Politicians",
+      "keyphrase": "current politicians"
+    }
+  ]  

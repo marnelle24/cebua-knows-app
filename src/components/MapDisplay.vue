@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import { ref, onMounted, watch, watchEffect } from 'vue';
+import { ref, onMounted, watch } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 
 const tooltip = ref<HTMLElement | null>(null);
 const route = useRoute();
 const router = useRouter();
 
-let mapScale = 4;
+const props = defineProps(['mapScale'])
 
 onMounted(() => {
     resetMap('#F7AE1D'); // Reset all regions to default color
@@ -24,14 +24,6 @@ watch(
     { immediate: true }
 )
 
-watchEffect(() => {
-    const place1 = route.params.place;
-
-    if (typeof place1 === 'undefined')
-        mapScale = 4;
-    else
-        mapScale = 8;
-});
 // Function to set tooltip element
 const setTooltipElement = () => {
     const regions = document.querySelectorAll('.region');
@@ -113,7 +105,7 @@ const regionClicked = (region: Element) => {
     const centerX = bbox.x + bbox.width / 2;
     const centerY = bbox.y + bbox.height / 2;
 
-    const scale = mapScale;
+    const scale = props.mapScale;
 
     // Calculate translation to center the clicked region
     const translateX = svgWidth / 2 - centerX;
