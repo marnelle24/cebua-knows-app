@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted, watchEffect } from 'vue';
+import { ref, onMounted, watchEffect, defineOptions, computed } from 'vue';
 import type { Ref } from 'vue';
 import { useRoute } from 'vue-router'
 defineOptions({
@@ -7,18 +7,41 @@ defineOptions({
 })
 const route = useRoute()
 const prettyLocation: Ref<string | null> = ref(null);
+const categories = ref<Category[]>([]);
+
 interface Category {
     query: string;
     label: string;
     keyphrase: string;
+    prompt: string;
 }
-
-const categories = ref<Category[]>([]);
 const queryValues = ref<Category>({
     query: '',
     label: '',
-    keyphrase: ''
+    keyphrase: '',
+    prompt: ''
 });
+
+interface Replacements {
+    [key: string]: string | null | undefined;
+}
+
+function replacePlaceholders(template: string, replacements: Replacements): string {
+    let output = template;
+    for (const [key, value] of Object.entries(replacements)) {
+        const pattern = new RegExp(`<${key}>`, 'g');
+        output = output.replace(pattern, value ?? '');
+    }
+    return output;
+}
+
+const finalString = computed(() => {
+    return replacePlaceholders(queryValues.value.prompt, {
+        label: queryValues.value.label,
+        selectedProvince: 'cebu',
+        selectedLocation: prettyLocation.value
+    })
+})
 
 onMounted(async () => {
     const res = await fetch('/src/assets/json/category.json')
@@ -26,7 +49,7 @@ onMounted(async () => {
 
     queryValues.value = categories.value.find(
         (item) => item.query === route.params.inquiry
-    ) || {};
+    ) || { query: '', label: '', keyphrase: '', prompt: '' };
 
     listItems.value.forEach((_, i) => {
         setTimeout(() => {
@@ -37,11 +60,6 @@ onMounted(async () => {
 
 watchEffect(() => {
     const location = route.params.place;
-    // const query = route.params.route;
-    // const phrase = route.params.keyphrase;
-
-    // console.log(location, query, phrase);
-
     prettyLocation.value = null;
 
     if (typeof location === 'string') {
@@ -97,10 +115,12 @@ const isVisible = ref(listItems.value.map(() => false))
                     <h2 class="text-xl text-[#f7ae1d] font-semibold mb-4 capitalize">{{ queryValues.keyphrase + ' ' +
                         (i + 1)
                         }}</h2>
+                    <span class="text-[#f7ae1d]/80 italic text-sm">Prompt</span>
+                    <!-- <p class="text-[#f7ae1d]/80 italic text-sm">
+                        {{ queryValues.keyphrase }}
+                    </p> -->
                     <p class="text-[#f7ae1d]/80 italic text-sm">
-                        {{ item.description }}
-                        <!-- <pre>{{ queryValues }}</pre> -->
-                    <pre>{{ queryValues.keyphrase }}</pre>
+                        {{ finalString }}
                     </p>
                 </li>
             </ul>
