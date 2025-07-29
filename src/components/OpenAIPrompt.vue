@@ -7,14 +7,6 @@ const props = defineProps<{
     province: string
 }>()
 
-// const promptResponse = ref([]);
-
-// 1. get the value of the inquiry prop
-// 2. find the '<label>' string value in the inquiry prop and replace it with the value of the label prop
-// 3. replace all instances of '<selectedProvince>'
-// 4. replace all instances of '<selectedLocation>'
-// 5. return the cleaned up string value
-
 const finalString = computed(() => {
     return props.inquiry
         .replace('<label>', props.label)

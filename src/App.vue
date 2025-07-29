@@ -2,22 +2,26 @@
 import { RouterView } from 'vue-router'
 import HeaderDisplay from './components/HeaderDisplay.vue'
 import MapDisplay from './components/MapDisplay.vue'
-
-// const route = useRoute();
-// console.log(route.params);
-
+import SideBarNavigation from './components/SideBarNavigation.vue'
 </script>
 
 <template>
-  <main class="flex items-center justify-center sticky z-50">
-    <div class="sticky top-0 z-[99999]">
+  <header class="xl:px-0 px-4 w-full flex xl:gap-0 gap-8 justify-between items-start relative z-50">
+    <div class="xl:w-2/3">
       <HeaderDisplay msg="Everything you need to know about Cebu" />
+    </div>
+    <SideBarNavigation />
+  </header>
+  <main class="flex xl:flex-row flex-col justify-between h-screen">
+    <div class="sticky top-0">
       <div id="mainContainer">
         <RouterView :key="$route.fullPath" />
       </div>
     </div>
+    <div class="flex items-center justify-center">
+      <MapDisplay />
+    </div>
   </main>
-  <MapDisplay :map-scale="4" />
 </template>
 
 <style scoped></style>
