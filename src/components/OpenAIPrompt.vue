@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue';
+import { useAPIStore } from '../stores/apiStore';
+import SkeletonLoader from './SkeletonLoader.vue';
 const props = defineProps<{
     location: string,
     label: string,
@@ -32,10 +34,9 @@ const spots = ref<TouristSpot[]>([]);
 const fetchingAPIData = ref(false);
 
 async function executeChartGPTPrompt() {
-    fetchingAPIData.value = true;
-    const apiKey = import.meta.env.VITE_OPENAI_API_KEY;
+    const apiStore = useAPIStore();
     const prompt = `
-  List the top 10 tourist destinations in ${location} in the province of Cebu, Philippines, and include:
+  List the top 10 tourist destinations in ${props.location} in the province of Cebu, Philippines, and include:
   - Name of the place
   - A short description (1-2 sentences)
   - Address or general location
@@ -48,54 +49,27 @@ async function executeChartGPTPrompt() {
   ]
   `;
 
-    const response = await fetch('https://api.openai.com/v1/chat/completions', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${apiKey}`
-        },
-        body: JSON.stringify({
-            model: 'gpt-3.5-turbo',
-            messages: [{ role: 'user', content: prompt }],
-            temperature: 0.7
-        })
-    });
-
-    const data = await response.json();
-    const reply = data.choices[0].message.content;
-
-    // Parse JSON if it's in valid format
     try {
+        const reply = await apiStore.fetchFromOpenAI(prompt, props.location);
         const touristSpots = JSON.parse(reply);
         spots.value = touristSpots;
-        console.log('chatGPT prompt:', prompt);
-        console.log(touristSpots)
-        fetchingAPIData.value = false;
-    }
-    catch (err) {
-        console.log(err);
-        console.log('GPT Response (not JSON):');
-        console.log(reply);
+    } catch (err) {
+        console.error('Error fetching tourist spots:', err);
+        spots.value = [];
     }
 }
 </script>
 <template>
     <template v-if="fetchingAPIData">
-        <p class="flex items-center justify-center">
-            <svg class="mx-auto w-10 h-10 flex" version="1.1" id="L4" xmlns="http://www.w3.org/2000/svg"
-                xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 40 60 16"
-                enable-background="new 0 0 0 0" xml:space="preserve">
-                <circle fill="currentColor" stroke="none" cx="6" cy="50" r="6">
-                    <animate attributeName="opacity" dur="1s" values="0;1;0" repeatCount="indefinite" begin="0.1" />
-                </circle>
-                <circle fill="currentColor" stroke="none" cx="26" cy="50" r="6">
-                    <animate attributeName="opacity" dur="1s" values="0;1;0" repeatCount="indefinite" begin="0.2" />
-                </circle>
-                <circle fill="currentColor" stroke="none" cx="46" cy="50" r="6">
-                    <animate attributeName="opacity" dur="1s" values="0;1;0" repeatCount="indefinite" begin="0.3" />
-                </circle>
-            </svg>
-        </p>
+        <div class="p-4 space-y-4">
+            <div v-for="n in 3" :key="n" class="flex gap-4">
+                <SkeletonLoader variant="circle" className="w-8 h-8" />
+                <div class="flex-1 space-y-2">
+                    <SkeletonLoader variant="text" className="w-3/4" />
+                    <SkeletonLoader variant="text" className="w-1/2" />
+                </div>
+            </div>
+        </div>
     </template>
     <template v-else>
         <div v-if="spots.length" class="max-h-[300px] overflow-scroll p-5">

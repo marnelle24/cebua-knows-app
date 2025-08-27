@@ -1,5 +1,15 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '../views/HomeView.vue'
+import { defineAsyncComponent } from 'vue'
+
+// Async component loading with loading and error states
+const AsyncComponentWrapper = (component: () => Promise<any>) => 
+  defineAsyncComponent({
+    loader: component,
+    loadingComponent: () => import('../components/LoadingView.vue'),
+    errorComponent: () => import('../components/ErrorView.vue'),
+    delay: 200,
+    timeout: 30000
+  })
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -7,27 +17,27 @@ const router = createRouter({
     {
       path: '/',
       name: 'home',
-      component: HomeView,
+      component: AsyncComponentWrapper(() => import(/* webpackChunkName: "home" */ '../views/HomeView.vue')),
     },
     {
       path: '/about',
       name: 'about',
-      component: () => import('../views/AboutView.vue'),
+      component: AsyncComponentWrapper(() => import(/* webpackChunkName: "about" */ '../views/AboutView.vue')),
     },
     {
       path: '/place/:place/:inquiry?',
       name: 'inquiry',
-      component: () => import('../views/InquiryView.vue'),
+      component: AsyncComponentWrapper(() => import(/* webpackChunkName: "inquiry" */ '../views/InquiryView.vue')),
     },
     {
       path: '/:location',
       name: 'location',
-      component: () => import('../views/LocationView.vue'),
+      component: AsyncComponentWrapper(() => import(/* webpackChunkName: "location" */ '../views/LocationView.vue')),
     },
     {
       path: '/:pathMatch(.*)*',
       name: 'NotFound',
-      component: () => import('../views/NotFound.vue')
+      component: AsyncComponentWrapper(() => import(/* webpackChunkName: "notfound" */ '../views/NotFound.vue'))
     }
   ],
 })

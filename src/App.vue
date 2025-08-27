@@ -1,27 +1,57 @@
 <script setup lang="ts">
-import { RouterView } from 'vue-router'
+import { ref, onMounted, onUnmounted } from 'vue'
 import HeaderDisplay from './components/HeaderDisplay.vue'
 import MapDisplay from './components/MapDisplay.vue'
 import SideBarNavigation from './components/SideBarNavigation.vue'
+import ErrorBoundary from './components/ErrorBoundary.vue'
+
+const isHeaderFixed = ref(false)
+
+const checkScroll = () => {
+  const quarterHeight = window.innerHeight / 16
+  isHeaderFixed.value = window.pageYOffset >= quarterHeight
+}
+
+onMounted(() => {
+  window.addEventListener('scroll', checkScroll)
+})
+
+onUnmounted(() => {
+  window.removeEventListener('scroll', checkScroll)
+})
 </script>
 
 <template>
-  <header class="xl:px-0 px-4 w-full flex xl:gap-0 gap-8 justify-between items-start relative z-50">
-    <div class="xl:w-2/3">
-      <HeaderDisplay msg="Everything you need to know about Cebu" />
+  <ErrorBoundary>
+    <div class="min-h-screen flex flex-col">
+      <header :class="[
+        'w-full px-4 py-2 z-20 transition-all duration-300 ease-in-out fixed top-0 left-0 ',
+        isHeaderFixed ? 'backdrop-blur-sm' : 'relative bg-transparent'
+      ]">
+        <div class="max-w-7xl mx-auto flex justify-center items-center h-[80px]">
+          <a href="/" class="w-full md:w-2/5 flex justify-center items-center">
+            <ErrorBoundary>
+              <HeaderDisplay msg="Everything you need to know about Cebu" />
+            </ErrorBoundary>
+          </a>
+        </div>
+      </header>
+      <ErrorBoundary>
+        <SideBarNavigation />
+      </ErrorBoundary>
+
+      <main :class="[
+        'flex-1 flex items-center justify-center lg:p-0 p-4 transition-spacing duration-300',
+        isHeaderFixed ? 'mt-16' : ''
+      ]">
+        <div class="w-full max-w-7xl">
+          <ErrorBoundary>
+            <MapDisplay />
+          </ErrorBoundary>
+        </div>
+      </main>
     </div>
-    <SideBarNavigation />
-  </header>
-  <main class="flex xl:flex-row flex-col justify-between h-screen">
-    <div class="sticky top-0">
-      <div id="mainContainer">
-        <RouterView :key="$route.fullPath" />
-      </div>
-    </div>
-    <div class="flex items-center justify-center">
-      <MapDisplay />
-    </div>
-  </main>
+  </ErrorBoundary>
 </template>
 
 <style scoped></style>
