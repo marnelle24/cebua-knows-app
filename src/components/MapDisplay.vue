@@ -30,54 +30,6 @@ watchEffect(() => {
     }
 });
 
-onMounted(() => {
-    resetMap('#F7AE1D'); // Reset all regions to default color
-    setTooltipElement(); // Set up tooltip event listeners
-});
-
-watch(
-    () => route.params.location || route.params.place,
-    (val) => {
-        if (typeof val === 'string' && val.trim() !== '') {
-            selectedRegion(val.trim());
-            mapStore.setSelectedRegion(val.trim());
-        }
-    },
-    { immediate: true }
-)
-
-// Function to set tooltip element
-const setTooltipElement = () => {
-    const regions = document.querySelectorAll('.region');
-    if (tooltip.value) {
-
-        regions.forEach(region => {
-            region.addEventListener('mouseover', (event) => {
-                const name = region.id.includes('-city') ? region.id.replace(/-/g, ' ').replace('city', 'City') : region.id;
-                if (tooltip.value) {
-                    tooltip.value.textContent = name;
-                    tooltipVisible.value = true;
-                    const mouseEvent = event as MouseEvent;
-                    tooltip.value.style.left = `${mouseEvent.offsetX + 1}px`;
-                    tooltip.value.style.top = `${mouseEvent.offsetY + 1}px`;
-                }
-            });
-
-            region.addEventListener('mousemove', (event) => {
-                if (tooltip.value && tooltipVisible.value) {
-                    const mouseEvent = event as MouseEvent;
-                    tooltip.value.style.left = `${mouseEvent.offsetX + 1}px`;
-                    tooltip.value.style.top = `${mouseEvent.offsetY + 1}px`;
-                }
-            });
-
-            region.addEventListener('mouseout', () => {
-                tooltipVisible.value = false;
-            });
-        });
-    }
-};
-
 // Function to reset all regions to a specific color
 const resetMap = (color: string) => {
     const svgMap = document.getElementById('cebuProvinceMap');
@@ -87,7 +39,7 @@ const resetMap = (color: string) => {
             region.setAttribute('fill', color);
         });
     }
-}
+};
 
 // Function to change fill color of a specific region
 const changeFillColor = (regionId: string, color: string) => {
@@ -98,7 +50,7 @@ const changeFillColor = (regionId: string, color: string) => {
             region.setAttribute('fill', color);
         }
     }
-}
+};
 
 // Function to highlight selected region
 const selectedRegion = (regionId: string) => {
@@ -111,7 +63,80 @@ const selectedRegion = (regionId: string) => {
         if (selectedReg)
             regionClicked(selectedReg);
     }
-}
+};
+
+onMounted(() => {
+    resetMap('#F7AE1D'); // Reset all regions to default color
+    setTooltipElement(); // Set up tooltip event listeners
+});
+
+watch(
+    () => route.params.location || route.params.place,
+    (val) => {
+        if (typeof val === 'string' && val.trim() !== '') {
+            selectedRegion(val.trim());
+            mapStore.setSelectedRegion(val.trim());
+        } else {
+            // Reset map when returning to homepage
+            resetMap('#F7AE1D');
+            mapStore.setSelectedRegion('');
+        }
+    },
+    { immediate: true }
+)
+
+// Function to set tooltip element
+const setTooltipElement = () => {
+    const regions = document.querySelectorAll('.region');
+    if (tooltip.value) {
+        regions.forEach(region => {
+            region.addEventListener('mouseover', () => {
+                const name = region.id.includes('-city') ? region.id.replace(/-/g, ' ').replace('city', 'City') : region.id;
+                if (tooltip.value) {
+                    tooltip.value.textContent = name;
+                    tooltipVisible.value = true;
+                    // Get the region's bounding box
+                    const rect = region.getBoundingClientRect();
+                    const svgRect = document.getElementById('cebuProvinceMap')?.getBoundingClientRect();
+
+                    if (svgRect) {
+                        // Calculate position relative to the SVG and account for scaling
+                        const x = rect.left + (rect.width / 2);
+                        const y = rect.top;
+
+                        // Position the tooltip
+                        tooltip.value.style.left = `${x}px`;
+                        tooltip.value.style.top = `${y}px`;
+                    }
+                }
+            });
+
+            region.addEventListener('mousemove', (event) => {
+                if (tooltip.value && tooltipVisible.value) {
+                    // Get the region's bounding box
+                    const rect = (event.target as Element).getBoundingClientRect();
+                    const svgRect = document.getElementById('cebuProvinceMap')?.getBoundingClientRect();
+
+                    if (svgRect) {
+                        // Calculate position relative to the SVG and account for scaling
+                        const x = rect.left + (rect.width / 2);
+                        const y = rect.top;
+
+                        // Position the tooltip
+                        tooltip.value.style.left = `${x}px`;
+                        tooltip.value.style.top = `${y}px`;
+                    }
+                }
+            });
+
+            region.addEventListener('mouseout', () => {
+                tooltipVisible.value = false;
+            });
+        });
+    }
+};
+
+
 
 // Function to handle click
 const regionClicked = (region: Element) => {
@@ -123,14 +148,25 @@ const regionClicked = (region: Element) => {
     const svgWidth = svgMap.viewBox.baseVal.width;
     const svgHeight = svgMap.viewBox.baseVal.height;
 
-    // Calculate the center of the region
+    // Calculate the true center of the region's bounding box
     const centerX = bbox.x + bbox.width / 2;
-    const centerY = bbox.y + bbox.height / 4;
+    const centerY = bbox.y + bbox.height / 2;
 
-    // Set scale to 2 and center the region
-    scale.value = 1;
-    translateX.value = -centerX + (svgWidth / 2);
-    translateY.value = -centerY + (svgHeight / 4);
+    // Define the zoom level (at least 25% zoom)
+    const zoomScale = 1; // A scale of 1.25 represents a 25% zoom in.
+
+    // Update the scale of the parent div
+    scale.value = zoomScale;
+
+    // Calculate new translation for the SVG to center the region
+    // The translation needs to account for the new scale applied to the parent.
+    // To center the region, its center (centerX, centerY) should align with the
+    // center of the SVG's viewBox, adjusted for the zoom scale.
+    // The effective center of the display in the SVG's coordinate system,
+    // when the parent is scaled by `zoomScale`, is `(svgWidth / 2 / zoomScale, svgHeight / 2 / zoomScale)`.
+    // So, the translation needed is: (target_center_in_svg_coords) - (region_center_in_svg_coords)
+    translateX.value = (svgWidth / 2 / zoomScale) - centerX;
+    translateY.value = (svgHeight / 2 / zoomScale) - centerY;
 
     router.push({ name: 'location', params: { location: (region as HTMLElement).id } });
 };
@@ -142,7 +178,11 @@ const regionClicked = (region: Element) => {
         <div v-if="loading" class="absolute inset-0 flex items-center justify-center">
             <SkeletonLoader variant="rectangle" className="w-full h-full" />
         </div>
-        <div class="w-full h-full" :style="{ transform: `scale(${scale})` }">
+        <div id="tooltip"
+            :class="['map-tooltip fixed text-white capitalize bg-black/40 backdrop-blur border border-white/10 p-2 font-bold rounded-md text-xs', { 'visible': tooltipVisible }]"
+            ref="tooltip">
+        </div>
+        <div class="w-full h-full relative" :style="{ transform: `scale(${scale})` }">
             <svg class="w-full h-full transform duration-500 ease-in-out"
                 :style="{ transform: `translate(${translateX}px, ${translateY}px)` }" id="cebuProvinceMap"
                 viewBox="0 0 213 466" fill="none" preserveAspectRatio="xMidYMid meet"
@@ -307,10 +347,6 @@ const regionClicked = (region: Element) => {
                     d="M184.36 202.815L185.937 202.697L187.971 201.282L188.782 201.558L190.609 200.948L192.776 199.592L194.368 197.863L195.09 196.468L195.016 195.191L194.309 193.029L193.852 192.479L192.083 191.614L190.668 189.059L189.917 188.529L187.544 192.164L185.849 195.584L184.611 199.573L184.257 202.403L184.36 202.815Z"
                     fill="#F7AE1D" stroke="black" stroke-width="0.4" stroke-miterlimit="10" />
             </svg>
-            <div id="tooltip"
-                :class="['map-tooltip absolute text-white capitalize bg-black/40 backdrop-blur border border-white/10 p-2 font-bold rounded-md text-xs', { 'visible': tooltipVisible }]"
-                ref="tooltip">
-            </div>
             <!-- <div class="zoom-controls">
                 <button class="zoom-button" @click="zoomIn" title="Zoom In">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
@@ -355,16 +391,19 @@ const regionClicked = (region: Element) => {
 .map-tooltip {
     transition: all 0.2s ease-in-out;
     opacity: 0;
-    transform: translateY(5px);
+    transform: translate(-50%, -100%);
     pointer-events: none;
     display: block !important;
-    position: absolute;
-    z-index: 50;
+    position: fixed;
+    z-index: 9999;
+    min-width: 80px;
+    text-align: center;
+    left: 0;
+    top: 0;
 }
 
 .map-tooltip.visible {
     opacity: 1;
-    transform: translateY(0);
 }
 
 #cebuProvinceMap {
