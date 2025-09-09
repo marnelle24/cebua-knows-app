@@ -19,11 +19,6 @@ const finalString = computed(() => {
 console.log(finalString);
 
 
-
-
-
-
-
 interface TouristSpot {
     name: string;
     description: string;

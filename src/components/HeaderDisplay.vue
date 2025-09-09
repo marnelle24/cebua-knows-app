@@ -1,16 +1,36 @@
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref, onMounted, onUnmounted, watch } from 'vue'
+import { useRoute } from 'vue-router'
 
 defineProps<{
   msg: string
 }>()
 
+const route = useRoute()
 const isHeaderFixed = ref(false)
 
 const checkScroll = () => {
   const quarterHeight = window.innerHeight / 16
   isHeaderFixed.value = window.pageYOffset >= quarterHeight
 }
+
+const resetScroll = () => {
+  window.scrollTo({
+    top: 0,
+    behavior: 'smooth'
+  })
+  isHeaderFixed.value = false
+}
+
+// Watch for route changes
+watch(
+  () => route.path,
+  (newPath) => {
+    if (newPath === '/') {
+      resetScroll()
+    }
+  }
+)
 
 onMounted(() => {
   window.addEventListener('scroll', checkScroll)

@@ -5,7 +5,7 @@ const isOpen = ref(false)
 
 <template>
     <button type="button"
-        class="fixed right-0 top-8 -translate-y-1/2 flex items-center justify-center p-2 bg-white/10 hover:bg-white/5 hover:scale-105 backdrop-blur transition-all duration-300 rounded-l-lg border-l border-t border-b border-white/10 z-50"
+        class="fixed right-0 lg:top-8 top-24 -translate-y-1/2 flex items-center justify-center p-2 bg-white/10 hover:bg-white/5 hover:scale-105 backdrop-blur transition-all duration-300 rounded-l-lg border-l border-t border-b border-white/10 z-50"
         @click="isOpen = !isOpen">
         <!-- <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 stroke-white transform transition-transform duration-300"
             :class="isOpen ? 'rotate-180' : ''" fill="none" viewBox="0 0 24 24" stroke-width="1.5">

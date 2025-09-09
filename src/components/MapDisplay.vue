@@ -4,6 +4,7 @@ import { useRouter, useRoute } from 'vue-router';
 import { useMapStore } from '../stores/mapStore';
 import { storeToRefs } from 'pinia';
 import SkeletonLoader from './SkeletonLoader.vue';
+import RegionModal from './RegionModal.vue';
 
 const tooltip = ref<HTMLElement | null>(null);
 const tooltipVisible = ref(false);
@@ -15,18 +16,27 @@ const router = useRouter();
 const mapStore = useMapStore();
 const { loading } = storeToRefs(mapStore);
 
-// const resetZoom = () => {
-//     scale.value = 1;
-//     translateX.value = 0;
-//     translateY.value = 0;
-// };
+// Modal state
+const modalVisible = ref(false);
+const selectedRegionName = ref('');
+
+const resetZoom = () => {
+    scale.value = 1.25;
+    translateX.value = 0;
+    translateY.value = 0;
+
+    // Remove selected class from all regions
+    const svgMap = document.getElementById('cebuProvinceMap');
+    if (svgMap) {
+        const allRegions = svgMap.querySelectorAll('.region');
+        allRegions.forEach(region => region.classList.remove('selected'));
+    }
+};
 
 watchEffect(() => {
     // Reset scale and position when navigating away from a region
     if (!route.params.location && !route.params.place) {
-        scale.value = 1;
-        translateX.value = 0;
-        translateY.value = 0;
+        resetZoom();
     }
 });
 
@@ -59,9 +69,16 @@ const selectedRegion = (regionId: string) => {
 
     const svgMap = document.getElementById('cebuProvinceMap');
     if (svgMap) {
+        // Remove selected class from all regions
+        const allRegions = svgMap.querySelectorAll('.region');
+        allRegions.forEach(region => region.classList.remove('selected'));
+
         const selectedReg = svgMap.querySelector(`#${regionId}`);
-        if (selectedReg)
+        if (selectedReg) {
+            // Add selected class for animation
+            selectedReg.classList.add('selected');
             regionClicked(selectedReg);
+        }
     }
 };
 
@@ -140,6 +157,14 @@ const setTooltipElement = () => {
 
 // Function to handle click
 const regionClicked = (region: Element) => {
+    const regionId = (region as HTMLElement).id;
+
+    // add the route of the region to the router
+    router.push({ name: 'location', params: { location: regionId } });
+
+    // Show the modal with region information
+    selectedRegionName.value = regionId;
+
     const svgMap = document.getElementById('cebuProvinceMap') as SVGSVGElement | null;
     if (!svgMap) return;
 
@@ -152,10 +177,10 @@ const regionClicked = (region: Element) => {
     const centerX = bbox.x + bbox.width / 2;
     const centerY = bbox.y + bbox.height / 2;
 
-    // Define the zoom level (at least 25% zoom)
-    const zoomScale = 1; // A scale of 1.25 represents a 25% zoom in.
+    // Define the zoom level (25% zoom in for better visual effect)
+    const zoomScale = 1.5;
 
-    // Update the scale of the parent div
+    // Animate zoom and pan simultaneously
     scale.value = zoomScale;
 
     // Calculate new translation for the SVG to center the region
@@ -168,7 +193,24 @@ const regionClicked = (region: Element) => {
     translateX.value = (svgWidth / 2 / zoomScale) - centerX;
     translateY.value = (svgHeight / 2 / zoomScale) - centerY;
 
-    router.push({ name: 'location', params: { location: (region as HTMLElement).id } });
+    // Show modal after zoom animation completes
+    setTimeout(() => {
+        modalVisible.value = true;
+    }, 900); // Slightly before animation completes for smoother UX
+};
+
+// Modal event handlers
+const closeModal = () => {
+    modalVisible.value = false;
+    // Reset zoom when modal is closed
+    setTimeout(() => {
+        resetZoom();
+    }, 300); // Small delay to let modal close animation complete
+};
+
+const exploreRegion = (regionName: string) => {
+    modalVisible.value = false;
+    router.push({ name: 'location', params: { location: regionName } });
 };
 
 </script>
@@ -182,7 +224,7 @@ const regionClicked = (region: Element) => {
             :class="['map-tooltip fixed text-white capitalize bg-black/40 backdrop-blur border border-white/10 p-2 font-bold rounded-md text-xs', { 'visible': tooltipVisible }]"
             ref="tooltip">
         </div>
-        <div class="w-full h-full relative" :style="{ transform: `scale(${scale})` }">
+        <div class="map-container w-full h-full relative" :style="{ transform: `scale(${scale})` }">
             <svg class="w-full h-full transform duration-500 ease-in-out"
                 :style="{ transform: `translate(${translateX}px, ${translateY}px)` }" id="cebuProvinceMap"
                 viewBox="0 0 213 466" fill="none" preserveAspectRatio="xMidYMid meet"
@@ -370,6 +412,10 @@ const regionClicked = (region: Element) => {
                 </button>
             </div> -->
         </div>
+
+        <!-- Region Modal -->
+        <RegionModal :isVisible="modalVisible" :regionName="selectedRegionName" @close="closeModal"
+            @explore="exploreRegion" />
     </div>
 </template>
 
@@ -386,6 +432,24 @@ const regionClicked = (region: Element) => {
     fill: #7BEA05 !important;
     filter: brightness(1.1);
     /* transform: scale(1.02); */
+}
+
+.region.selected {
+    fill: #7BEA05 !important;
+    filter: brightness(1.2) drop-shadow(0 0 8px rgba(123, 234, 5, 0.6));
+    animation: pulse-selected 2s ease-in-out infinite;
+}
+
+@keyframes pulse-selected {
+
+    0%,
+    100% {
+        filter: brightness(1.2) drop-shadow(0 0 8px rgba(123, 234, 5, 0.6));
+    }
+
+    50% {
+        filter: brightness(1.4) drop-shadow(0 0 12px rgba(123, 234, 5, 0.8));
+    }
 }
 
 .map-tooltip {
@@ -406,8 +470,14 @@ const regionClicked = (region: Element) => {
     opacity: 1;
 }
 
+.map-container {
+    transition: transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    will-change: transform;
+    transform-origin: center;
+}
+
 #cebuProvinceMap {
-    transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
     will-change: transform;
     transform-origin: center;
 }
