@@ -6,11 +6,11 @@
             <div class="bg-blur-2xl border border-white/60 rounded-2xl shadow-2xl max-w-lg w-full max-h-[90vh] overflow-hidden flex flex-col"
                 @click.stop>
                 <div
-                    class="flex items-center justify-between p-6 sm:p-4 border-b border-gray-200 bg-white/20 text-white">
+                    class="flex items-center justify-between p-6 sm:p-4 border-b border-gray-200 bg-white/90 text-slate-800">
                     <h2 class="text-xl sm:text-lg font-bold m-0 leading-tight">Great Finds in {{
                         formatRegionName(regionName) }}</h2>
                     <button
-                        class="bg-white/20 rounded-full w-10 h-10 flex items-center justify-center text-white cursor-pointer transition-colors duration-200 ease-in-out hover:bg-white/30"
+                        class="bg-slate-300/60 rounded-full w-10 h-10 flex items-center justify-center text-slate-600 cursor-pointer transition-colors duration-200 ease-in-out hover:bg-slate-300/80"
                         @click="closeModal">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
                             stroke="currentColor">
@@ -20,23 +20,24 @@
                     </button>
                 </div>
 
-                <div class="flex-1 overflow-y-auto p-6 sm:p-4">
-                    <div class="flex flex-col gap-4">
+                <div class="flex-1 overflow-y-auto bg-white/90">
+                    <div class="flex flex-col">
                         <div v-for="category in greatFinds" :key="category.id"
-                            class="flex items-center gap-4 p-4 sm:p-3.5 border border-gray-200 rounded-lg transition-all duration-200 ease-in-out cursor-pointer bg-black/60 hover:border-[#F7AE1D] hover:bg-[#FFB84D]/50 hover:shadow-lg hover:shadow-[#F7AE1D]/15 hover:-translate-y-px"
+                            class="flex items-center gap-4 p-6 border border-gray-200 transition-all duration-200 ease-in-out cursor-pointer bg-slate-100 hover:border-[#F7AE1D] hover:bg-[#FFB84D]/50 hover:shadow-lg hover:shadow-[#F7AE1D]/15 hover:-translate-y-px"
                             @click="handleCategoryClick(category)">
                             <div
-                                class="flex-shrink-0 w-12 h-12 sm:w-10 sm:h-10 rounded-lg flex items-center justify-center text-white">
+                                class="flex-shrink-0 w-12 h-12 sm:w-10 sm:h-10 rounded-lg flex items-center justify-center text-slate-800">
                                 <div v-html="getCategoryIcon(category.type).template"></div>
                             </div>
                             <div class="flex-1">
-                                <h3 class="text-base sm:text-sm font-semibold mb-1 text-white leading-tight">
+                                <h3 class="text-base sm:text-sm font-semibold mb-1 text-slate-800 leading-tight">
                                     {{ category.title }}</h3>
-                                <p class="text-sm sm:text-xs text-white/80 m-0 leading-tight">{{ category.description }}
+                                <p class="text-sm sm:text-xs text-slate-800/80 m-0 leading-tight">{{
+                                    category.description }}
                                 </p>
                             </div>
                             <div>
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none"
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-slate-800" fill="none"
                                     viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M9 5l7 7-7 7" />
@@ -46,9 +47,9 @@
                     </div>
                 </div>
 
-                <div class="p-6 sm:p-4 border-t bg-blur-2xl border border-white/60 bg-white/20 text-white">
+                <div class="p-6 sm:p-4 border-t bg-blur-2xl border border-white/60 bg-white/90 text-slate-800">
                     <button
-                        class="bg-white/20 border border-white/60 rounded-full px-4 py-2 hover:bg-white/30 hover:-translate-y-1 duration-300 ease-in-out"
+                        class="bg-slate-200 border border-slate-500 rounded-full px-4 py-2 hover:bg-slate-300 hover:-translate-y-1 duration-300 ease-in-out"
                         @click="exploreRegion">
                         Explore {{ formatRegionName(regionName) }}
                     </button>
